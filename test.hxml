@@ -1,0 +1,5 @@
+-D buddy-colors
+-D buddy-ignore-passing-specs
+-lib buddy
+-x tests.Main
+-cp src/
