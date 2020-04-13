@@ -1,7 +1,10 @@
 package ecs;
 
-interface Process {
-    private var isProcessing(default, default): Bool;
+class Process {
+    private var isProcessing(default, default): Bool = true;
 
-    public function update(delta: Float): Void;
+    public function update(delta: Float) {
+        if (!isProcessing)
+            return;
+    }
 }

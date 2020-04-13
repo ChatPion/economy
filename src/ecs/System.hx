@@ -7,7 +7,17 @@ interface SystemListener {
     public function removedFromSpace(space: Space): Void;
 }
 
-interface System extends Process extends SystemListener {
+class System extends Process implements SystemListener {
+
+    public var space(default, null): Space = null;
+
+    public function addedToSpace(space: Space) {
+        this.space = space;
+    }
+
+    public function removedFromSpace(space: Space) {
+        this.space = null;
+    }
 
 }
 

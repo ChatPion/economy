@@ -1,0 +1,5 @@
+-lib buddy
+-lib mcover
+--macro mcover.MCover.coverage([''], ['src'], null)
+-x tests.MainCoverage
+-cp src/
