@@ -1,9 +1,13 @@
 package ecs;
 
-import ecs.Entity;
+import ecs.Process;
 
-interface System {
-    private var isProcessing(default, default): Bool;
-
-    public function update(delta: Float, entities: List<Entity>): Void;
+interface SystemListener {
+    public function addedToSpace(space: Space): Void;
+    public function removedFromSpace(space: Space): Void;
 }
+
+interface System extends Process extends SystemListener {
+
+}
+
