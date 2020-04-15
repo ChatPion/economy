@@ -1,4 +1,4 @@
-package ecs.utils;
+package economy.utils;
 
 class ImmutableList<T> {
 

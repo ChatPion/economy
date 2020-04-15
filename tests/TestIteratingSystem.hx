@@ -1,10 +1,10 @@
 package tests;
 
-import ecs.IteratingSystem;
-import ecs.Component;
-import ecs.Entity;
-import ecs.Family;
-import ecs.Space;
+import economy.IteratingSystem;
+import economy.Component;
+import economy.Entity;
+import economy.Family;
+import economy.Space;
 
 using buddy.Should;
 using Lambda;

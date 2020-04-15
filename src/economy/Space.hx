@@ -1,10 +1,10 @@
-package ecs;
+package economy;
 
-import ecs.Entity;
-import ecs.System;
-import ecs.Family;
-import ecs.EntityFamily;
-import ecs.Process;
+import economy.Entity;
+import economy.System;
+import economy.Family;
+import economy.EntityFamily;
+import economy.Process;
 
 using Lambda;
 

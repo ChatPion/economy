@@ -1,7 +1,7 @@
-package ecs;
+package economy;
 
-import ecs.System;
-import ecs.EntityFamily;
+import economy.System;
+import economy.EntityFamily;
 
 class IteratingSystem extends System {
 

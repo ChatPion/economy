@@ -1,9 +1,9 @@
 package tests;
 
-import ecs.Component;
-import ecs.Entity;
-import ecs.Space;
-import ecs.Family;
+import economy.Component;
+import economy.Entity;
+import economy.Space;
+import economy.Family;
 
 using buddy.Should;
 using Lambda;

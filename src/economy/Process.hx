@@ -1,4 +1,4 @@
-package ecs;
+package economy;
 
 class Process {
     private var isProcessing(default, default): Bool = true;

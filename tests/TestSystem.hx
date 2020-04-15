@@ -1,6 +1,6 @@
 package tests;
 
-import ecs.System;
+import economy.System;
 
 class TestSystem extends buddy.BuddySuite {
     public function new() {

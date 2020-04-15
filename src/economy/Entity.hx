@@ -1,6 +1,6 @@
-package ecs;
+package economy;
 
-import ecs.Component;
+import economy.Component;
 
 class Entity {
 

@@ -1,7 +1,7 @@
 package tests;
 
-import ecs.Entity;
-import ecs.Component;
+import economy.Entity;
+import economy.Component;
 
 using buddy.Should;
 

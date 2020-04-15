@@ -1,6 +1,6 @@
-package ecs;
+package economy;
 
-import ecs.utils.ImmutableList;
+import economy.utils.ImmutableList;
 
 class EntityFamily extends ImmutableList<Entity> {
 

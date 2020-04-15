@@ -1,4 +1,4 @@
-package ecs;
+package economy;
 
 interface Component {
     
