@@ -1,0 +1,16 @@
+{
+    "name": "economy",
+    "url": "https://github.com/ChatPion/economy",
+    "license": "MIT",
+    "tags": ["ecs"],
+    "description": "An Entity-Component-System library",
+    "version": "0.1.0",
+    "classPath": "src/",
+    "releasenote": "First release, missing plenty of features",
+    "contributors": ["ChatPion"],
+    "dependencies": {
+        "buddy": "2.10.4",
+        "mcover": "2.2.1"
+    },
+    "main": "tests.Main"
+}
