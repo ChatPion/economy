@@ -1,6 +1,6 @@
 package economy;
 
-import economy.Process;
+import economy.utils.Process;
 
 interface SystemListener {
     public function addedToSpace(space: Space): Void;

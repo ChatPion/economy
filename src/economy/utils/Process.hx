@@ -1,4 +1,4 @@
-package economy;
+package economy.utils;
 
 class Process {
     private var isProcessing(default, default): Bool = true;

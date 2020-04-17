@@ -4,7 +4,7 @@ import economy.Entity;
 import economy.System;
 import economy.Family;
 import economy.EntityFamily;
-import economy.Process;
+import economy.utils.Process;
 
 using Lambda;
 
