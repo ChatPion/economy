@@ -1,0 +1,3 @@
+= economy
+
+An ECS library written in Haxe
