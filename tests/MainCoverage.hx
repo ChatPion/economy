@@ -18,8 +18,10 @@ class MainCoverage {
 
         runner.run();
 
+        #if mcover
         var logger = mcover.coverage.MCoverage.getLogger();
         logger.report();
+        #end
 
         
         #if sys
