@@ -9,6 +9,14 @@ using buddy.Should;
 using Lambda;
 
 
+private class Dummy {
+    public var x: Int;
+    public function new(x: Int) {
+        this.x = x;
+    }
+}
+
+
 private class Counter {
     private static var i = 0;
     
@@ -193,6 +201,23 @@ class TestSpace extends buddy.BuddySuite {
             it("should update systems in the added order", {
                 system1.updateOrder.should.be(1);
                 system2.updateOrder.should.be(2);
+            });
+        });
+
+        describe("When using globals", {
+            var space = new Space();
+            space.addGlobal("Test");
+            space.addGlobal(new Dummy(1));
+            space.addGlobal(new Space());
+            space.removeGlobal(Space);
+
+            it("should correctly store objects", {
+                space.getGlobal(String).should.be("Test");
+                space.getGlobal(Dummy).x.should.be(1);
+            });
+
+            it("should correctly remove stored objects", {
+                space.getGlobal(Space).should.be(null);
             });
         });
     }

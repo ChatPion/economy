@@ -12,6 +12,8 @@ class Space extends Process implements ComponentListener {
     private var entities: List<Entity>;
     private var systems: List<System>;
 
+    private var globals: Map<String, Dynamic>;
+
     private var familyToEntities: Map<Family, List<Entity>>;
     private var componentToFamily: Map<String, List<Family>>;
 
@@ -20,6 +22,7 @@ class Space extends Process implements ComponentListener {
         systems = new List();
         familyToEntities = [];
         componentToFamily = [];
+        globals = [];
     }
 
     public override function update(delta: Float) {
@@ -108,6 +111,19 @@ class Space extends Process implements ComponentListener {
                 componentToFamily[className] = new List();
             componentToFamily[className].add(family);
         }
+    }
+    
+
+    public function addGlobal<T>(object: T) {
+        globals[Type.getClassName(Type.getClass(object))] = object;
+    }
+
+    public function getGlobal<T>(c: Class<T>): T {
+        return globals[Type.getClassName(c)];
+    }
+
+    public function removeGlobal<T>(c: Class<T>) {
+        globals.remove(Type.getClassName(c));
     }
 
 }
