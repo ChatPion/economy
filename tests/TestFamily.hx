@@ -126,13 +126,33 @@ class TestFamily extends buddy.BuddySuite {
         });
 
         describe("When using equal families", {
-            trace("stuff");
             var f1 = Family.all([]).get();
             var f2 = Family.all([]).get();
 
             var space = new Space();
             
             var e1 = space.getEntitiesFor(f1);
+            var e2 = space.getEntitiesFor(f2);
+
+            it("should return the same EntityList", {
+                e1.should.be(e2);
+            });
+        });
+
+        describe("When using equal families and adding a component", {
+            var f1 = Family.all([]).get();
+            var f2 = Family.all([]).get();
+
+            var space = new Space();
+
+            var e1 = space.getEntitiesFor(f1);
+
+            var entity = new Entity();
+            space.addEntity(entity);
+            entity.add(new C1());
+
+            space.getEntitiesFor(Family.all([C1]).get());
+            
             var e2 = space.getEntitiesFor(f2);
 
             it("should return the same EntityList", {

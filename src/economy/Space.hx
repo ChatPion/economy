@@ -14,18 +14,18 @@ class Space extends Process implements ComponentListener {
 
     private var globals: Map<String, Dynamic>;
 
-    private var familyToEntities: Map<String, List<Entity>>;
-    private var componentToFamily: Map<String, List<Family>>;
+    private var familyToEntitiesMap: Map<String, List<Entity>>;    
     private var entityFamilies: Map<String, EntityFamily>;
 
+    private var componentToFamily: Map<String, List<Family>>;
     private var componentToId: Map<String, Int>;
     private var idToComponent: Array<Class<Component>>;
-    private var counter = 0;
+    private var componentCounter = 0;
 
     public function new() {
         entities = new List();
         systems = new List();
-        familyToEntities = [];
+        familyToEntitiesMap = [];
         componentToFamily = [];
         entityFamilies = [];
         globals = [];
@@ -43,7 +43,7 @@ class Space extends Process implements ComponentListener {
     public function addEntity(entity: Entity) {
         this.entities.add(entity);
         entity.registerListener(this);
-        for (id => list in familyToEntities)
+        for (id => list in familyToEntitiesMap)
             if (idToFamily(id).matches(entity))
                 list.add(entity);
     }
@@ -54,18 +54,18 @@ class Space extends Process implements ComponentListener {
 
     public function getEntitiesFor(family: Family): EntityFamily {
         var id = familyToId(family);
-        if (!familyToEntities.exists(id)) {
+        if (!familyToEntitiesMap.exists(id)) {
             addFamily(family);
         }
         if (!entityFamilies.exists(id))
-            entityFamilies[id] = new EntityFamily(familyToEntities[id]);
+            entityFamilies[id] = new EntityFamily(familyToEntitiesMap[id]);
         return entityFamilies[id];
     }
 
     public function removeEntity(entity: Entity) {
         entities.remove(entity);
         entity.unregisterListener(this);
-        for (id => list in familyToEntities)
+        for (id => list in familyToEntitiesMap)
             if (idToFamily(id).matches(entity))
                 list.remove(entity);
     }
@@ -92,19 +92,28 @@ class Space extends Process implements ComponentListener {
         updateFamiliesOfEntity(entity, component);
     }
 
+    private function familyToEntities(family: Family): List<Entity> {
+        var id = familyToId(family);
+        if (!familyToEntitiesMap.exists(id))
+            addFamily(family);
+        return familyToEntitiesMap[id];
+    }
+
     private function updateFamiliesOfEntity(entity: Entity, component: Class<Component>) {
         if (!componentToFamily.exists(Type.getClassName(component)))
             return;
 
         for (family in componentToFamily[Type.getClassName(component)])
             if (family.matches(entity))
-                familyToEntities[familyToId(family)].add(entity);
+                familyToEntities(family).add(entity);
             else
-                familyToEntities[familyToId(family)].remove(entity);
+                familyToEntities(family).remove(entity);
     }
 
     private function addFamily(family: Family) {
-        familyToEntities[familyToId(family)] = entities.filter(e -> family.matches(e));
+        familyToEntitiesMap[familyToId(family)] = entities.filter(e -> family.matches(e));
+
+        updateFamiliesId();
 
         var components = new List<Class<Component>>();
         for (component in family.include)
@@ -124,6 +133,21 @@ class Space extends Process implements ComponentListener {
             componentToFamily[className].add(family);
         }
     }
+
+    private function updateFamiliesId() {
+        for (id in familyToEntitiesMap.keys()) {
+            if (id.length == componentCounter) continue; 
+
+            var newId = id;
+            while (newId.length < componentCounter) newId += "0";
+
+            familyToEntitiesMap[newId] = familyToEntitiesMap[id];
+            entityFamilies[newId] = entityFamilies[id];
+
+            familyToEntitiesMap.remove(id);
+            entityFamilies.remove(id);
+        }
+    }
     
 
     public function addGlobal<T>(object: T) {
@@ -138,18 +162,19 @@ class Space extends Process implements ComponentListener {
         globals.remove(Type.getClassName(c));
     }
 
-    public function getComponentId(component: Class<Component>): Int {
+    private function getComponentId(component: Class<Component>): Int {
         var name = Type.getClassName(component);
         if (!componentToId.exists(name)) {
-            componentToId[name] = counter++;
+            componentToId[name] = componentCounter;
+            componentCounter++;
             idToComponent.push(component);
         }
         return componentToId[name];
     }
 
-    public function familyToId(family: Family): String {
+    private function familyToId(family: Family): String {
         // 0 -> nothing, 1 -> all, 2 -> one, 3 -> none
-        var map = [for (_ in 0...counter) "0"];
+        var map = [for (_ in 0...componentCounter) "0"];
         for (c in family.include)
             map[getComponentId(c)] = "1";
         for (c in family.ones)
@@ -163,7 +188,7 @@ class Space extends Process implements ComponentListener {
         return total;
     }
 
-    public function idToFamily(id: String): Family {
+    private function idToFamily(id: String): Family {
         var builder = new FamilyBuilder();
         for (i in 0...id.length) {
             switch(id.charAt(i)) {

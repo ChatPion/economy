@@ -119,7 +119,7 @@ class TestIteratingSystem extends buddy.BuddySuite {
                 var inSystem: Entity;
                 var notInSystem: Entity;
 
-                beforeAll({
+                beforeEach({
                     space = new Space();
                     
                     system = new SnooperSystem();
