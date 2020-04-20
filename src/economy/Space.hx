@@ -14,15 +14,24 @@ class Space extends Process implements ComponentListener {
 
     private var globals: Map<String, Dynamic>;
 
-    private var familyToEntities: Map<Family, List<Entity>>;
+    private var familyToEntities: Map<String, List<Entity>>;
     private var componentToFamily: Map<String, List<Family>>;
+    private var entityFamilies: Map<String, EntityFamily>;
+
+    private var componentToId: Map<String, Int>;
+    private var idToComponent: Array<Class<Component>>;
+    private var counter = 0;
 
     public function new() {
         entities = new List();
         systems = new List();
         familyToEntities = [];
         componentToFamily = [];
+        entityFamilies = [];
         globals = [];
+
+        componentToId = [];
+        idToComponent = [];
     }
 
     public override function update(delta: Float) {
@@ -34,8 +43,8 @@ class Space extends Process implements ComponentListener {
     public function addEntity(entity: Entity) {
         this.entities.add(entity);
         entity.registerListener(this);
-        for (family => list in familyToEntities)
-            if (family.matches(entity))
+        for (id => list in familyToEntities)
+            if (idToFamily(id).matches(entity))
                 list.add(entity);
     }
 
@@ -44,17 +53,20 @@ class Space extends Process implements ComponentListener {
     }
 
     public function getEntitiesFor(family: Family): EntityFamily {
-        if (!familyToEntities.exists(family)) {
+        var id = familyToId(family);
+        if (!familyToEntities.exists(id)) {
             addFamily(family);
         }
-        return new EntityFamily(familyToEntities[family]);
+        if (!entityFamilies.exists(id))
+            entityFamilies[id] = new EntityFamily(familyToEntities[id]);
+        return entityFamilies[id];
     }
 
     public function removeEntity(entity: Entity) {
         entities.remove(entity);
         entity.unregisterListener(this);
-        for (family => list in familyToEntities)
-            if (family.matches(entity))
+        for (id => list in familyToEntities)
+            if (idToFamily(id).matches(entity))
                 list.remove(entity);
     }
 
@@ -86,13 +98,13 @@ class Space extends Process implements ComponentListener {
 
         for (family in componentToFamily[Type.getClassName(component)])
             if (family.matches(entity))
-                familyToEntities[family].add(entity);
+                familyToEntities[familyToId(family)].add(entity);
             else
-                familyToEntities[family].remove(entity);
+                familyToEntities[familyToId(family)].remove(entity);
     }
 
     private function addFamily(family: Family) {
-        familyToEntities[family] = entities.filter(e -> family.matches(e));
+        familyToEntities[familyToId(family)] = entities.filter(e -> family.matches(e));
 
         var components = new List<Class<Component>>();
         for (component in family.include)
@@ -125,5 +137,45 @@ class Space extends Process implements ComponentListener {
     public function removeGlobal<T>(c: Class<T>) {
         globals.remove(Type.getClassName(c));
     }
+
+    public function getComponentId(component: Class<Component>): Int {
+        var name = Type.getClassName(component);
+        if (!componentToId.exists(name)) {
+            componentToId[name] = counter++;
+            idToComponent.push(component);
+        }
+        return componentToId[name];
+    }
+
+    public function familyToId(family: Family): String {
+        // 0 -> nothing, 1 -> all, 2 -> one, 3 -> none
+        var map = [for (_ in 0...counter) "0"];
+        for (c in family.include)
+            map[getComponentId(c)] = "1";
+        for (c in family.ones)
+            map[getComponentId(c)] = "2";
+        for (c in family.exclude)
+            map[getComponentId(c)] = "3";
+
+        var total = "";
+        for (s in map)
+            total += s;
+        return total;
+    }
+
+    public function idToFamily(id: String): Family {
+        var builder = new FamilyBuilder();
+        for (i in 0...id.length) {
+            switch(id.charAt(i)) {
+                case "0": 
+                case "1": builder = builder.all([idToComponent[i]]);
+                case "2": builder = builder.one([idToComponent[i]]);
+                case "3": builder = builder.none([idToComponent[i]]);
+                default: throw "Should not happen";
+            }
+        }
+        return builder.get();
+    } 
+
 
 }

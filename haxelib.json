@@ -4,7 +4,7 @@
     "license": "MIT",
     "tags": ["ecs"],
     "description": "An Entity-Component-System library",
-    "version": "0.2.0",
+    "version": "0.2.1",
     "classPath": "src/",
     "releasenote": "First release, missing plenty of features",
     "contributors": ["ChatPion"],

@@ -124,5 +124,20 @@ class TestFamily extends buddy.BuddySuite {
                 });
             });
         });
+
+        describe("When using equal families", {
+            trace("stuff");
+            var f1 = Family.all([]).get();
+            var f2 = Family.all([]).get();
+
+            var space = new Space();
+            
+            var e1 = space.getEntitiesFor(f1);
+            var e2 = space.getEntitiesFor(f2);
+
+            it("should return the same EntityList", {
+                e1.should.be(e2);
+            });
+        });
     }
 }
