@@ -8,9 +8,6 @@
     "classPath": "src/",
     "releasenote": "First release, missing plenty of features",
     "contributors": ["ChatPion"],
-    "dependencies": {
-        "buddy": "2.10.4",
-        "mcover": "2.2.1"
-    },
+    "dependencies": {},
     "main": "tests.Main"
 }
